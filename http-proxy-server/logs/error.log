@@ -1,0 +1,2 @@
+
+2022/10/13 13:09:55 [error] 31#31: *1 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 172.18.0.1, server: sample.site.local.test, request: "GET /favicon.ico HTTP/1.1", host: "sample.site.local.test", referrer: "http://sample.site.local.test/"
