@@ -1,0 +1,82 @@
+version: "3.5"
+
+services:
+  slurm-jupyter:
+        container_name: slurm-jupyter
+        image: slurm-jupyter:latest
+        hostname: slurm-jupyter
+        user: admin
+        volumes:
+                - ./home/admin:/home/admin
+                - ./volumes/shared/etc/slurm-llnl:/etc/slurm-llnl
+                - ./volumes/slurm-jupyter/docker-entrypoint.sh:/etc/docker-entrypoint.sh
+        ports:
+                - 8888:8888
+        networks:
+                - slurm-network
+
+  slurm-master:
+       container_name: slurm-master
+       image: slurm-master:latest
+       hostname: slurm-master
+       user: admin
+       volumes:
+                - ./home/admin:/home/admin
+                - ./volumes/shared/etc/slurm-llnl:/etc/slurm-llnl
+                - ./volumes/slurm-master/docker-entrypoint.sh:/etc/docker-entrypoint.sh
+                - ./volumes/slurm-master/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
+       networks:
+                - slurm-network
+                
+  slurm-node1:
+        container_name: slurm-node1
+        image: slurm-node:latest
+        hostname: slurm-node1
+        user: admin
+        depends_on:
+                - slurm-master
+        volumes:
+                - ./home/admin:/home/admin
+                - ./volumes/shared/etc/slurm-llnl:/etc/slurm-llnl
+                - ./volumes/slurm-node/docker-entrypoint.sh:/etc/docker-entrypoint.sh
+        environment:
+                - SLURM_NODENAME=slurm-node1
+        networks:
+                - slurm-network
+
+  slurm-node2:
+        container_name: slurm-node2
+        image: slurm-node:latest
+        hostname: slurm-node2
+        user: admin
+        depends_on:
+                - slurm-master
+        volumes:
+                - ./home/admin:/home/admin
+                - ./volumes/shared/etc/slurm-llnl:/etc/slurm-llnl
+                - ./volumes/slurm-node/docker-entrypoint.sh:/etc/docker-entrypoint.sh
+        environment:
+                - SLURM_NODENAME=slurm-node2
+        networks:
+                - slurm-network
+
+  slurm-node3:
+        container_name: slurm-node3
+        image: slurm-node:latest
+        hostname: slurm-node3
+        user: admin
+        depends_on:
+                - slurm-master
+        volumes:
+                - ./home/admin:/home/admin
+                - ./volumes/shared/etc/slurm-llnl:/etc/slurm-llnl
+                - ./volumes/slurm-node/docker-entrypoint.sh:/etc/docker-entrypoint.sh
+        environment:
+                - SLURM_NODENAME=slurm-node3
+        networks:
+                - slurm-network
+
+networks:
+  slurm-network:
+    name: slurm-network
+    driver: bridge
